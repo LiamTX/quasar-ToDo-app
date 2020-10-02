@@ -21,7 +21,12 @@
       </q-toolbar>
     </q-header>
 
-    <q-drawer v-model="leftDrawerOpen" show-if-above :width="200" :breakpoint="600">
+    <q-drawer
+      v-model="leftDrawerOpen"
+      show-if-above
+      :width="200"
+      :breakpoint="600"
+    >
       <q-scroll-area
         style="
           height: calc(100% - 150px);
@@ -38,7 +43,15 @@
             <q-item-section> ToDo's </q-item-section>
           </q-item>
 
-          <q-item to="/help" exact clickable v-ripple>
+          <!-- <q-item to="/Profile" exact clickable v-ripple>
+            <q-item-section avatar>
+              <q-icon name="accessibility" />
+            </q-item-section>
+
+            <q-item-section> Perfil </q-item-section>
+          </q-item> -->
+
+          <q-item to="/Help" exact clickable v-ripple>
             <q-item-section avatar>
               <q-icon name="help" />
             </q-item-section>
@@ -50,15 +63,19 @@
 
       <q-img
         class="absolute-top"
-        src="https://cdn.quasar.dev/img/material.png"
+        src="../statics/mountain.jpg"
         style="height: 150px"
       >
-        <div class="absolute-bottom bg-transparent">
+        <div class="absolute-bottom bg-transdarparent">
           <q-avatar size="56px" class="q-mb-sm">
-            <img src="https://cdn.quasar.dev/img/boy-avatar.png" />
+            <img v-if="user.avatar != ''" :src="user.avatar" />
+            <img v-else src="https://cdn.quasar.dev/img/boy-avatar.png" />
           </q-avatar>
-          <div class="text-weight-bold">Razvan Stoenescu</div>
-          <div>@rstoenescu</div>
+          <div class="text-weight-bold">{{ user.name }}</div>
+
+          <!--  -->
+
+          <Dialog @userChange="changeUser($event)" />
         </div>
       </q-img>
     </q-drawer>
@@ -71,6 +88,7 @@
 
 <script>
 import EssentialLink from "components/EssentialLink.vue";
+import Dialog from "components/Dialog.vue";
 
 const linksData = [
   {
@@ -121,11 +139,15 @@ import { date } from "quasar";
 
 export default {
   name: "MainLayout",
-  components: { EssentialLink },
+  components: { EssentialLink, Dialog },
   data() {
     return {
       leftDrawerOpen: false,
       essentialLinks: linksData,
+      user: {
+        avatar: "",
+        name: "Liam Cabral",
+      },
     };
   },
   computed: {
@@ -133,6 +155,25 @@ export default {
       let timeStamp = Date.now();
       return date.formatDate(timeStamp, "dddd D MMMM");
     },
+  },
+  methods: {
+    changeUser(e) {
+      this.user.avatar = e.avatar;
+      this.user.name = e.name;
+    },
+    load() {
+      // let picAvatar = this.$q.localStorage.getItem("avatar");
+      // if (picAvatar == null) {
+      //   return;
+      // }
+      let pickUser = this.$q.localStorage.getItem("user");
+
+      this.user.avatar = pickUser.avatar;
+      this.user.name = pickUser.name;
+    },
+  },
+  created() {
+    this.load();
   },
 };
 </script>

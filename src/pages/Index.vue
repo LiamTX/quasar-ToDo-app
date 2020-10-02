@@ -1,12 +1,12 @@
 <template>
-  <q-page class="bg-grey-3 column">
-    <div class="row q-pa-sm bg-primary">
+  <q-page class="bg-dark-3 column">
+    <div class="row q-pa-sm bg-dark">
       <q-input
         @keyup.enter="addTodo()"
         v-model="newTodo"
         class="col"
         square
-        bg-color="white"
+        bg-color="black"
         filled
         placeholder="Adicionar TODO"
         dense
@@ -16,7 +16,7 @@
         </template>
       </q-input>
     </div>
-    <q-list class="bg-white">
+    <q-list class="bg-dark">
       <q-item
         v-for="(task, index) in tasks"
         :key="task.title"
@@ -30,7 +30,7 @@
             v-model="task.done"
             class="no-pointer-events"
             val="teal"
-            color="primary"
+            color="dark"
           />
         </q-item-section>
         <q-item-section>
@@ -38,25 +38,19 @@
         </q-item-section>
         <q-item-section v-if="task.done" side>
           <q-btn
-            @click.stop="deleteTasks(index)"
+            @click.stop="deleteTasks(index, task.index)"
             flat
             round
             dense
-            color="primary"
+            color="white"
             icon="delete"
           />
         </q-item-section>
       </q-item>
     </q-list>
     <div v-if="!this.tasks.length" class="no-tasks absolute-center">
-      <q-icon 
-        name="check"
-        size="100px"
-        color="primary"
-      />
-      <div class="text-h5 text-primary text-center">
-        Nenhum TODO
-      </div>
+      <q-icon name="check" size="100px" color="dark" />
+      <div class="text-h5 text-dark text-center">Nenhum TODO</div>
     </div>
   </q-page>
 </template>
@@ -70,6 +64,18 @@ export default {
     };
   },
   methods: {
+    async load() {
+      let allKeys = await this.$q.localStorage.getAllKeys();
+      console.log(allKeys);
+
+      for (let i = 0; i < allKeys.length; i++) {
+        let Tasks = this.$q.localStorage.getItem(allKeys[i]);
+
+        this.tasks.push(Tasks);
+
+        console.log(Tasks);
+      }
+    },
     addTodo() {
       let verify = this.tasks.filter((todo) => {
         return todo.title === this.newTodo;
@@ -81,12 +87,15 @@ export default {
           color: "black",
         });
         return;
-      };
+      }
 
-      this.tasks.push({ title: this.newTodo, done: false });
+      let newTask = { title: this.newTodo, done: false };
+      let index = this.tasks.push(newTask);
+      newTask.index = index.toString();
+      this.$q.localStorage.set(index, newTask);
       this.newTodo = "";
     },
-    deleteTasks(index) {
+    deleteTasks(index, taskIndex) {
       this.$q
         .dialog({
           title: "Confirme",
@@ -96,12 +105,16 @@ export default {
         })
         .onOk(() => {
           this.tasks.splice(index, 1);
+          this.$q.localStorage.remove(taskIndex);
           this.$q.notify({
             message: "TODO deletado.",
             color: "black",
           });
         });
     },
+  },
+  created() {
+    this.load();
   },
 };
 </script>
@@ -110,11 +123,11 @@ export default {
 .done {
   .q-item__label {
     text-decoration: line-through;
-    color: #bbb;
+    color: dark;
   }
 }
 
-.no-tasks{
+.no-tasks {
   opacity: 0.5;
 }
 </style>
