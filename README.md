@@ -18,5 +18,6 @@ quasar dev
 quasar build
 ```
 
-### Customize the configuration
-See [Configuring quasar.conf.js](https://quasar.dev/quasar-cli/quasar-conf-js).
+### Build electron .exe
+quasar build -m electron
+*File in folder dist/electron/Quasar App-win32-x64/Quasar App.exe
