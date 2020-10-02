@@ -12,10 +12,14 @@ npm install
 quasar dev
 ```
 
-
 ### Build the app for production
 ```bash
 quasar build
+```
+
+### Start the app in development mode for electron
+```bash
+quasar dev -m electron
 ```
 
 ### Build electron .exe
@@ -23,3 +27,8 @@ quasar build
 quasar build -m electron
 ```
 *File in folder dist/electron/Quasar App-win32-x64/Quasar App.exe
+
+### Start the app in development mode for android
+```bash
+quasar dev -m cordova -T android
+```
