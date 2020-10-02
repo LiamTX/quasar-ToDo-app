@@ -19,7 +19,7 @@ quasar build
 ```
 
 ### Build electron .exe
-```quasar 
-build -m electron
+```bash
+quasar build -m electron
 ```
 *File in folder dist/electron/Quasar App-win32-x64/Quasar App.exe
